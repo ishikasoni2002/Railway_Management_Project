@@ -74,22 +74,20 @@ def delete_train(train_number):
     cur.execute('DELETE FROM Trains WHERE TRAIN_NUMBER =?', (train_number,))
     cur.execute('DELETE FROM Train_Route WHERE TRAIN_NUMBER =?', (train_number,))
     conn.commit()
-    print("Train Does not exist anymore")
+
 
 
 def update_train_fare(new_fare, train_no):
     # IF TABLE DOES NOT EXISTS THROW ERROR
     cur.execute('UPDATE Trains SET TRAIN_FARE =? WHERE TRAIN_NUMBER = ?', (new_fare, train_no))
     conn.commit()
-    print("Train Fare Updated! ")
+
 
 
 def update_tc_assigned(train_no, new_tc):
     # IF TABLE DOES NOT EXISTS THROW ERROR
     cur.execute('UPDATE Trains SET TC_ASSIGNED =? WHERE TRAIN_NUMBER = ?', (new_tc, train_no))
     conn.commit()
-    new_tc = new_tc.capitalize()
-    print(f"{new_tc} is assigned as new TC ")
 
 
 def get_time_details_of_start_and_end():
@@ -97,3 +95,16 @@ def get_time_details_of_start_and_end():
 
 def show_all_trains():
     return cur.execute('SELECT * FROM Trains').fetchall()
+
+def update_station_platform(train_number,  platform):
+    cur.execute('UPDATE Train_Route SET PLATFORM = ? WHERE TRAIN_NUMBER = ?',
+                (platform, train_number))
+    conn.commit()
+
+
+# def insert_into_table(table_name, values):
+#     query= f'INSERT INTO {table_name} VALUES(parameters)',()
+
+def close_connection():
+    cur.close()
+    conn.close()

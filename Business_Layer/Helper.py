@@ -3,7 +3,6 @@ import Database_Layer.db_utils as utils
 import json
 
 
-
 def generate_hash(password):
     pw_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
@@ -19,7 +18,7 @@ def check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
 
     time_detail = utils.get_time_details_of_start_and_end()
     start_time = time_detail[0][1]
-    end_time =  time_detail[0][2]
+    end_time = time_detail[0][2]
 
     for time in time_detail:
         if ((start_time <= time[1] and time[1] <= end_time) or
@@ -42,3 +41,15 @@ def check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
 
     else:
         return False
+
+
+def convert_minutes_to_time(minutes):
+    hours = minutes // 60
+    min_time = minutes % 60
+    time = f'{hours} :: {min_time}'
+    return time
+
+
+def call_close_connection():
+    utils.close_connection()
+

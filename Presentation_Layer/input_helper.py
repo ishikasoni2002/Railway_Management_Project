@@ -35,11 +35,11 @@ def route_details():
 
         platform = get_int('Enter Platform Number: ', 'Platform should only contain digits')
 
-        arrival_time = get_time('Enter Start Hour of the Train', 'Enter valid Hours ',
-                                'Enter start Minutes of the Train', 'Enter valid Minutes ')
+        arrival_time = get_time('Enter the hour at which the train arrives', 'Enter valid Hours ',
+                                'Enter the minutes at which the train arrives', 'Enter valid Minutes ')
         total_minutes = hours_to_minute(arrival_time)
 
-        list_of_stations.append(station_name)
+        list_of_stations.append(station_name.lower().capitalize())
         list_of_platforms.append(platform)
         list_of_arrival_time.append(total_minutes)
         list_of_departure_time.append(total_minutes + 10)
@@ -79,6 +79,7 @@ def get_train_details():
     while True:
         tc_assigned = input("Enter TC Assigned: ")
         if tc_assigned.isalpha():
+            tc_assigned = tc_assigned.lower().capitalize()
             break
         else:
             print("Enter TC Name Properly")

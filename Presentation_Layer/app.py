@@ -4,7 +4,6 @@ from Business_Layer.Trains import Train
 import Presentation_Layer.input_helper as inp_helper
 from Business_Layer.Admins import Admin
 
-
 # object creation
 auth = authentication()
 train = Train()
@@ -134,19 +133,27 @@ if user_role == 'Guest':
                 train_no = int(train_no)
                 train.search_by_train_number(train_no)
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
 
 
         elif user_input == '2':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
                 train.show_route(train_no)
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
         elif user_input == '3':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
@@ -154,9 +161,16 @@ if user_role == 'Guest':
                 if station.isalpha() and station.isalnum():
                     train.show_platform_number(train_no, station)  #todo Not implemented properly
                 else:
-                    print("Stations should also have a station name, not just numbers")
+                    if not station:
+                        print('No input was provided!')
+                    else:
+                        print("Stations should also have a station name, not just numbers")
+
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
         elif user_input == '4':
 
@@ -164,19 +178,26 @@ if user_role == 'Guest':
 
             if train_no.isdigit():
                 train_no = int(train_no)
-                starting_station = input("Enter starting station").lower()
-                ending_station = input("Enter Ending Station").lower()
+                starting_station = input("Enter starting station").lower().capitalize()
+                ending_station = input("Enter Ending Station").lower().capitalize()
 
                 if (starting_station.isalpha() and starting_station.isalnum() and
                         ending_station.isalpha() and ending_station.isalnum()):
-                    print(train.check_fare(train_no, starting_station, ending_station))
+                    train_fare = train.check_fare(train_no, starting_station, ending_station)
+                    if train_fare:
+                        print(train_fare)
                 else:
-                    print("Stations should also have a station name, not just numbers")
+
+                    print("Stations should also have a proper station name")
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
 
         elif user_input == '5':
+
             break
         else:
             print("Enter Valid Choice!")
@@ -196,19 +217,33 @@ else:
         elif user_input == '2':
             train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
             admin.remove_train(train_number)
+            print("Train successfully deleted")
 
         elif user_input == '3':
             train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
-            train_fare= inp_helper.get_int('Enter new train fare: ', 'Please enter integer value only! ')
+            train_fare = inp_helper.get_int('Enter new train fare: ', 'Please enter integer value only! ')
             admin.update_train_fare(train_number, train_fare)
+            print("Train Fare Updated! ")
 
         elif user_input == '4':
             train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
             station = input('Enter station name: ')
             platform = input('Enter platform number: ')
             admin.update_train_platform(train_number, station, platform)
+
         elif user_input == '5':
-            admin.update_tc_assigned()
+
+            train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
+            while True :
+                new_tc = input('Enter Name of Tc you wish to assign : ')
+                if not new_tc.isalpha():
+                    print('TC must have a name')
+                    continue
+                else:
+                    break
+            new_tc = new_tc.lower().capitalize()
+            admin.update_tc_assigned(train_number, new_tc)
+            print(f"{new_tc} is assigned as new TC ")
 
         elif user_input == '6':
             train.show_all_trains()
@@ -217,19 +252,26 @@ else:
                 train_no = int(train_no)
                 train.search_by_train_number(train_no)
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
 
         elif user_input == '7':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
                 train.show_route(train_no)
             else:
-                print("Train Number cannot Consist of Alphabets!")
-
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
         elif user_input == '8':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
@@ -237,26 +279,40 @@ else:
                 if station.isalpha() and station.isalnum():
                     train.show_platform_number(train_no, station)  # todo Not implemented properly
                 else:
-                    print("Stations should also have a station name, not just numbers")
+                    if not station:
+                        print('No input was provided!')
+                    else:
+                        print("Stations should also have a station name, not just numbers")
+
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
 
         elif user_input == '9':
+            train.show_all_trains()
             train_no = input("Enter train number")
 
             if train_no.isdigit():
                 train_no = int(train_no)
-                starting_station = input("Enter starting station").lower()
-                ending_station = input("Enter Ending Station").lower()
+                starting_station = input("Enter starting station").lower().capitalize()
+                ending_station = input("Enter Ending Station").lower().capitalize()
 
                 if (starting_station.isalpha() and starting_station.isalnum() and
                         ending_station.isalpha() and ending_station.isalnum()):
-                    print(train.check_fare(train_no, starting_station, ending_station))
+                    train_fare = train.check_fare(train_no, starting_station, ending_station)
+                    if train_fare:
+                        print(train_fare)
                 else:
-                    print("Stations should also have a station name, not just numbers")
+
+                    print("Stations should also have a proper station name")
             else:
-                print("Train Number cannot Consist of Alphabets!")
+                if not train_no:
+                    print('No input was provided!')
+                else:
+                    print("Provide only digits in the train number")
 
 
 
@@ -267,8 +323,3 @@ else:
             print("Enter Valid Choice!")
 
         user_input = input(admin_dialog)
-
-
-
-
-# todo  how will the user know train number
