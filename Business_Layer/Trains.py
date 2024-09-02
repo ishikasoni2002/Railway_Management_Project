@@ -4,6 +4,12 @@ import json
 class Train:
 
 
+    def show_all_trains(self):
+        list_of_trains = utils.show_all_trains()
+        print('The List Of trains is as follows: ')
+        for train_detail in list_of_trains:
+            print(f'Train Number: {train_detail[0]}, Train Name: {train_detail[1]}')
+
     def search_by_train_number(self, train_number):
         res = utils.get_train_details(train_number)
         if res:

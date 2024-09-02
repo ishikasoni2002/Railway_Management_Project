@@ -99,12 +99,13 @@ while True:
             root_is_valid = auth.check_root_password(root_password)
             if root_is_valid:
                 auth.signup_new_admin(username, password)
-                print('Successfully Signed up! Please Login with your new Credentials')
+                print('\nSuccessfully Signed up! Please Login with your new Credentials')
                 break
             else:
-                try_again = input('Invalid Root Password! \nDo you wish to try again y/n?')
+                try_again = input('Invalid Root Password! \nTo discontinue press "n".')
                 if try_again == 'n':
                     break
+
 
     elif user_input == '2':
         username = input('Enter Username: ')
@@ -127,6 +128,7 @@ if user_role == 'Guest':
     while user_input != '5':
 
         if user_input == '1':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
@@ -209,6 +211,7 @@ else:
             admin.update_tc_assigned()
 
         elif user_input == '6':
+            train.show_all_trains()
             train_no = input("Enter train number")
             if train_no.isdigit():
                 train_no = int(train_no)
@@ -264,3 +267,8 @@ else:
             print("Enter Valid Choice!")
 
         user_input = input(admin_dialog)
+
+
+
+
+# todo  how will the user know train number

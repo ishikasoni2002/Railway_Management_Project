@@ -41,10 +41,12 @@ def get_train_details(train_number):
     return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
 
 
-def show_route(train_number):
-    return cur.execute('SELECT ROUTE FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
+# def show_route(train_number):
+#     return cur.execute('SELECT ROUTE FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
 
 
+def get_all_route_details():
+    return cur.execute('SELECT * FROM Train_Route').fetchall()
 def get_route_details(train_number):
     return cur.execute('SELECT ROUTE, PLATFORM FROM Train_Route WHERE train_number = ?', (train_number,)).fetchall()
 
@@ -93,4 +95,5 @@ def update_tc_assigned(train_no, new_tc):
 def get_time_details_of_start_and_end():
     return cur.execute('SELECT TRAIN_NUMBER, START_TIME, END_TIME FROM Trains').fetchall()
 
-
+def show_all_trains():
+    return cur.execute('SELECT * FROM Trains').fetchall()

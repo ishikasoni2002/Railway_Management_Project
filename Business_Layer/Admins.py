@@ -7,8 +7,8 @@ class Admin:
     def add_new_train(self, train_details):
         start_time_in_minutes = train_details['starting_station_time']
         end_time_in_minutes = train_details['ending_station_time']
-        data_of_route = [train_details['list_of_stations'], train_details['list_of_platforms'],
-                         train_details['list_of_arrival_time'], train_details['list_of_departure_time']]
+        data_of_route = [train_details['route'], train_details['platform_number'],
+                         train_details['arrival_time'], train_details['departure_time']]
         flag = helper.check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
 
         if flag:
