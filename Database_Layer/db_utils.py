@@ -1,5 +1,5 @@
 from Database_Layer.connection import conn, cur
-import Business_Layer.Helper as helper
+import Business_Layer.helper as helper
 import json
 
 
@@ -21,6 +21,22 @@ def create_tables_if_not_exists():
     conn.commit()
 
 
+#admin User functions
+def get_admin_users():
+    cur.execute('SELECT * FROM AdminUsers ').fetchall()
+
+def insert_first_admin_into_AdminUsers(username, hashed_password):
+    cur.execute('INSERT INTO AdminUsers VALUES(null, ?, ?)', (username, hashed_password))
+    conn.commit()
+
+def admin_details(username):
+    cur.execute('SELECT * FROM AdminUsers WHERE USERNAMES = ?', (username, )).fetchall()
+
+
+#************************************************************************
+
+
+#Login User Credentials
 def get_hashed_password(username):
     return cur.execute('SELECT PASSWORDS FROM AdminUsers where '
                        'USERNAMES = ?', (username,)).fetchall()[0][0]
@@ -40,6 +56,9 @@ def insert_new_admin(username, password):
 def get_train_details(train_number):
     return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
 
+def get_train_details_using_name(train_name):
+    return cur. execute('SELECT * FROM Trains WHERE train_name = ?', (train_name,)).fetchall()
+
 
 # def show_route(train_number):
 #     return cur.execute('SELECT ROUTE FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
@@ -47,6 +66,8 @@ def get_train_details(train_number):
 
 def get_all_route_details():
     return cur.execute('SELECT * FROM Train_Route').fetchall()
+
+
 def get_route_details(train_number):
     return cur.execute('SELECT ROUTE, PLATFORM FROM Train_Route WHERE train_number = ?', (train_number,)).fetchall()
 
@@ -76,12 +97,10 @@ def delete_train(train_number):
     conn.commit()
 
 
-
 def update_train_fare(new_fare, train_no):
     # IF TABLE DOES NOT EXISTS THROW ERROR
     cur.execute('UPDATE Trains SET TRAIN_FARE =? WHERE TRAIN_NUMBER = ?', (new_fare, train_no))
     conn.commit()
-
 
 
 def update_tc_assigned(train_no, new_tc):
@@ -93,10 +112,12 @@ def update_tc_assigned(train_no, new_tc):
 def get_time_details_of_start_and_end():
     return cur.execute('SELECT TRAIN_NUMBER, START_TIME, END_TIME FROM Trains').fetchall()
 
+
 def show_all_trains():
     return cur.execute('SELECT * FROM Trains').fetchall()
 
-def update_station_platform(train_number,  platform):
+
+def update_station_platform(train_number, platform):
     cur.execute('UPDATE Train_Route SET PLATFORM = ? WHERE TRAIN_NUMBER = ?',
                 (platform, train_number))
     conn.commit()

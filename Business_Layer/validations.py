@@ -14,4 +14,8 @@ def check_username_and_password_format(type_un_or_pw, username_or_password):
         return False
 
 
+def check_time_format(time):
+    pass
+
+
 

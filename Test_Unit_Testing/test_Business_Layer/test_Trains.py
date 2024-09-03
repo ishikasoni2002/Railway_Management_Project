@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from Business_Layer.Trains import Train
+from Business_Layer.trains import Train
 
 
 class test_trains(unittest.TestCase):
@@ -34,9 +34,9 @@ class test_trains(unittest.TestCase):
         mock_get_route_details.assert_not_called()
 
 
-    @patch('Database_Layer.db_utils.get_train_details')
-    def test_show_platform_number(self):
-        pass
+    # @patch('Database_Layer.db_utils.get_train_details')
+    # def test_show_platform_number(self):
+    #     pass
 
 
     @patch('json.loads', return_value = ["Wwe", "Ener"])

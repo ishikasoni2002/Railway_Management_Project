@@ -1,5 +1,5 @@
 import unittest
-import Business_Layer.Validations as validation
+import Business_Layer.validations as validation
 class TestCheckUsernameAndPasswordFormat(unittest.TestCase):
     def test_valid_usernames(self):
         self.assertTrue(validation.check_username_and_password_format('username', 'User1'))

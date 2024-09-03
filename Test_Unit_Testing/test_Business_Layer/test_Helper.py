@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import json
-import Business_Layer.Helper
+import Business_Layer.helper
 
 class TestCheckTrainClash(unittest.TestCase):
 
@@ -25,7 +25,7 @@ class TestCheckTrainClash(unittest.TestCase):
             [5, 15]
         )
 
-        result = Business_Layer.Helper.check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
+        result = Business_Layer.helper.check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
         self.assertTrue(result)
 
     @patch('Database_Layer.db_utils.get_time_details_of_start_and_end')
@@ -49,7 +49,7 @@ class TestCheckTrainClash(unittest.TestCase):
             [5, 15]
         )
 
-        result = Business_Layer.Helper.check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
+        result = Business_Layer.helper.check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
         self.assertFalse(result)
 
 

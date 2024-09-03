@@ -1,7 +1,17 @@
-def get_time(start_hour1, error1, start_hour2, error2):
-    hours = get_int(start_hour1, error1)
-    minutes = get_int(start_hour2, error2)
-    return {"Hours": hours, "Minutes": minutes}
+import Business_Layer.validations as validation
+
+
+def get_time():
+    while True:
+        time = input('Enter Time for the train (24 Hours Format HH : MM): ')
+        is_valid_format = validation.check_time_format(time)
+        if is_valid_format:
+            return True
+        else:
+            print('Enter Valid Format!')
+            return False
+
+
 
 
 def get_int(msg1, msg2):
@@ -35,8 +45,7 @@ def route_details():
 
         platform = get_int('Enter Platform Number: ', 'Platform should only contain digits')
 
-        arrival_time = get_time('Enter the hour at which the train arrives', 'Enter valid Hours ',
-                                'Enter the minutes at which the train arrives', 'Enter valid Minutes ')
+        arrival_time = get_time()
         total_minutes = hours_to_minute(arrival_time)
 
         list_of_stations.append(station_name.lower().capitalize())
@@ -59,7 +68,7 @@ def get_train_details():
     # getting train number
     while True:
         train_no = get_int('Enter Train Number', 'Train number should only contain digits')
-        if train_no is None or len(str(train_no)) is not 5:
+        if train_no is None or len(str(train_no)) != 5:
             print('Please enter integer value with length = 5 ')
         else:
             break

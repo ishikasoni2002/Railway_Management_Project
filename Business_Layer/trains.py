@@ -1,49 +1,36 @@
 import Database_Layer.db_utils as utils
 import json
-import Business_Layer.Helper as helper
+import Business_Layer.helper as helper
 class Train:
 
 
     def show_all_trains(self):
         list_of_trains = utils.show_all_trains()
-        print('The List Of trains is as follows: \n')
-        for train_detail in list_of_trains:
-            print(f'Train Number: {train_detail[0]}, Train Name: {train_detail[1]}')
+        if list_of_trains:
+            print('The List Of Trains is as follows: \n\n')
+            for train_detail in list_of_trains:
+                print(f'Train Number: {train_detail[0]}, Train Name: {train_detail[1]}')
+        else:
+            print('No Trains exist! ')
 
     def search_by_train_number(self, train_number):
-        res = utils.get_train_details(train_number)
-        if res:
-            start_time= helper.convert_minutes_to_time(res[0][4])
-            end_time= helper.convert_minutes_to_time(res[0][5])
-            total_days= 0
-            rem_time=0
-            minutes=int()
-            time=0
-            if res[0][5]>24:
-                total_days = (res[0][5]//60)//24
-                rem_time = (res[0][4])//60 + (res[0][5])//60 - (24*total_days)
-                time = (res[0][4])//60 + rem_time
-                minutes= (res[0][4])%60
-                print(minutes)
-                if time>24:
-                    total_days+=1
-                    time = time-24
-
-            print(f'\nThe Train Number is {res[0][0]}\n'
-                  f'The Train Name is {res[0][1]}\n'
-                  f'The Train Fare is {res[0][2]}\n'
-                  f'The TC Assigned is {res[0][3]}\n'
-                  f'The Train Journey Starts at {start_time}\n'
-                  f'The Train Journey Ends after {total_days} days at {time} :: {minutes} \n'
-                  )
+        train_details = utils.get_train_details(train_number)
+        if train_details:
+            helper.print_train_details(train_details)
         else:
-            print('Train does not exists')
+            print('Train does not exists! ')
 
+    def search_by_train_name(self, train_name):
+        train_details = utils.get_train_details_using_name(train_name)
+        if train_details:
+            helper.print_train_details(train_details)
+        else:
+            print('Train does not exists! ')
 
     def show_route(self, train_number):
-        is_train_existing = utils.get_train_details(train_number)
+        train_details = utils.get_train_details(train_number)
 
-        if is_train_existing:
+        if train_details:
             res = utils.get_route_details(train_number)
             print(res[0][0])
         else:
