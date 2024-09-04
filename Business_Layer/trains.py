@@ -33,32 +33,39 @@ class Train:
 
         if train_details:
             res = utils.get_route_details(train_number)
-            print(res[0][0])
+            list_of_routes = json.loads(res[0])
+            list_of_platforms =json.loads(res[1])
+            list_of_arrival_time =json.loads(res[2])
+            print(f"The Route of the Train {train_number} is as follows: ")
+            for index in range(len(list_of_routes)):
+                print(f"The train will arrive on {list_of_routes[index]} at platform 0{list_of_platforms[index]} at {helper.convert_minutes_to_time(list_of_arrival_time[index])}")
+
         else:
             print('Train does not exists!')
 
     def show_platform_number(self, train_number, station):
         # todo yet to implement
         train_exists = utils.get_train_details(train_number)
-        if train_exists:
-            train_details = utils.get_route_details(train_number)
-            print(train_details)
-            print(train_details[0], type(train_details[0]))
+        if not train_exists:
+            print('Train does not exist! ')
+            return
 
-            stations = json.loads(json.dumps(train_details[0]))
-            platforms = json.loads(json.dumps(train_details[1]))
-            stations = stations.strip('[').strip(']').split(',')
-            platforms = platforms.strip('[').strip(']').split(',')
+        train_details = utils.get_route_details(train_number)
+        print(train_details)
+        print(train_details[0], type(train_details[0]))
 
-            for index in range(len(stations)):
-                if stations[index].strip("'") == station:
-                    print(f'The platform for {station} of train number {train_number} is: ', platforms[index])
-                    break
-            else:
-                print('Station does not exists! ')
+        stations = json.loads(json.dumps(train_details[0]))
+        platforms = json.loads(json.dumps(train_details[1]))
+        stations = stations.strip('[').strip(']').split(',')
+        platforms = platforms.strip('[').strip(']').split(',')
 
+        for index in range(len(stations)):
+            print(stations[index], station)
+            if stations[index].strip('"') == station:
+                print(f'The platform for {station} of train number {train_number} is: ', platforms[index])
+                break
         else:
-            print('Train does not exist!')
+            print('Station does not exists! ')
 
     def check_fare(self, train_number, from_station, to_station):
         train_details_if_exists = utils.get_train_details(train_number)
@@ -66,14 +73,14 @@ class Train:
             train_route = utils.get_route_details(train_number)[0]
             train_route = json.loads(json.dumps(train_route))
             train_route = train_route.strip('[').strip(']').split(',')
-            train_route = [route.strip(' ').strip("'") for route in train_route]
+            train_route = [route.strip(' ').strip('"') for route in train_route]
             from_index = -1
             to_index = -1
 
             for index in range(len(train_route)):
-                if train_route[index].strip("'").lower().capitalize() == from_station:
+                if train_route[index].strip('"').lower().capitalize() == from_station:
                     from_index = index
-                if train_route[index].strip("'").lower().capitalize() == to_station:
+                if train_route[index].strip('"').lower().capitalize() == to_station:
                     to_index = index
             if from_index != -1 and to_index != -1 and from_index <= to_index:
                 train_fare = train_details_if_exists[0][2]
@@ -89,3 +96,22 @@ class Train:
 
         else:
             print('Train does not exists!')
+
+    def show_train_using_stations(self, from_station, to_station):
+        Trains = []
+        all_route_details = utils.get_all_route_details()
+
+        train_numbers = [route[0] for route in all_route_details]
+        stations = [json.loads(route[1]) for route in all_route_details]
+
+        for index, station_route in enumerate(stations):
+            try:
+                from_index = station_route.index(from_station)
+                to_index = station_route.index(to_station)
+
+                if from_index < to_index:
+                    Trains.append(train_numbers[index])
+            except ValueError:
+                continue
+
+        return Trains

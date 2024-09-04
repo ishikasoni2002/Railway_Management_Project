@@ -1,9 +1,11 @@
+import Business_Layer
 from Business_Layer.authentication import Authentication
 import Business_Layer.validations as validation
 from Business_Layer.trains import Train
 import Presentation_Layer.input_helper as inp_helper
 from Business_Layer.admins import Admin
-from Business_Layer.helper import call_close_connection,get_all_route_details
+from Business_Layer.helper import get_all_route_details
+import getpass
 
 # object creation
 auth = Authentication()
@@ -27,16 +29,21 @@ _______________________________________________________________________________
 admin_dialog = '''
 _______________________________________________________________________________
 What do you wish to do:
-1. Add New Train 
-2. Remove Any Train
-3. Update Train Fare 
-4. Update Platform Number of a particular train for a particular station
-5. Update TC Assigned
-6. Search a Train 
-7. Show Route Of the train
-8. Show platform number of a particular train at particular station
-9. Show Fare
-10. Exit
+1. Create new Admin
+2. Delete an existing Admin
+3. Add New Train 
+4. Remove Any Train
+5. Update Train Fare 
+6. Update Platform Number of a particular train for a particular station
+7. Update TC Assigned
+8. Show All Trains
+9. Search Using Train number
+10. Search Using Train Name 
+11. Search using stations 
+12. Show Route Of the train
+13. Show platform number of a particular train at particular station
+14. Show Fare
+15. Back
 _______________________________________________________________________________
 '''
 
@@ -59,6 +66,12 @@ user_input = input(welcome_menu)
 user_role = 'Guest'
 
 
+def get_password():
+    # Prompt the user for a password
+    password = getpass.getpass(prompt='Enter Password: ')
+    return password
+
+
 def main_menu(user_input):
     global user_role
 
@@ -68,8 +81,8 @@ def main_menu(user_input):
             while True:
                 username = input('Enter Username: ')
                 is_username_valid = validation.check_username_and_password_format('username', username)
-
-                password = input('Enter Password: ')
+                password = get_password()
+                print("Password entered:", password)
                 is_password_valid = validation.check_username_and_password_format('password', password)
 
                 if is_username_valid and is_password_valid:
@@ -77,7 +90,8 @@ def main_menu(user_input):
                     if user_role == 'Admin':
                         return user_role
                     else:
-                        try_again = input('Admin login failed! Press enter to try again, press n to continue as guest : ')
+                        try_again = input(
+                            'Admin login failed! Press enter to try again, press n to continue as guest : ')
                         if try_again == 'n':
                             return user_role
 
@@ -89,7 +103,7 @@ def main_menu(user_input):
 
         elif user_input == '3':
             print('Terminating...')
-            call_close_connection()
+            Business_Layer.helper.call_close_connection()
             exit()
 
         else:
@@ -132,11 +146,33 @@ def guest_func():
                     print("Provide Proper Name! ")
 
         elif user_input == '4':  # searching train using from stations and to station
-            from_station = input('Enter the From Station :')
-            to_station = input('Enter the To Station :')
-            all_route_details = get_all_route_details()
-            all_route_details = [routes for routes in all_route_details]
-            print(all_route_details)
+
+            while True:
+                from_station = input('Enter the From Station: ')
+                if not from_station.isalpha():
+                    print('Enter Valid Name! ')
+
+                else:
+                    from_station = from_station.lower().capitalize()
+                    break
+
+            while True:
+                to_station = input('Enter the To Station: ')
+                if not to_station.isalpha():
+                    print('Enter Valid Name! ')
+
+                else:
+                    to_station = to_station.lower().capitalize()
+                    break
+
+            list_of_trains = train.show_train_using_stations(from_station, to_station)
+            if not list_of_trains:
+                print('No trains with the available route! ')
+
+            else:
+                print("The Following are the trains with the same route! ")
+                for train_number in list_of_trains:
+                    print(f"Train number: {train_number}")
 
         elif user_input == '5':  # show route
             train_no = input("Enter train number : ")
@@ -153,7 +189,7 @@ def guest_func():
             train_no = input("Enter the train number : ")
             if train_no.isdigit():
                 train_no = int(train_no)
-                station = input('Enter Station : ')
+                station = input('Enter Station : ').lower().capitalize()
                 if station.isalpha() and station.isalnum():
                     train.show_platform_number(train_no, station)  # todo Not implemented properly
                 else:
@@ -205,34 +241,51 @@ def admin_func():
     user_input = input(admin_dialog)
     while True:
 
-        if user_input == '1':  #add new Train
+        if user_input == '1':
+            pass
+        elif user_input == '2':
+            pass
+        if user_input == '3':  #add new Train
             train_details = inp_helper.get_train_details()
-            try :
+            try:
                 admin.add_new_train(train_details)
-            except RuntimeError :
+            except RuntimeError:
                 print('Add minimum of 2 stations for the train !\n')
                 continue
 
-        elif user_input == '2':  #remove Train
-            train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
+        elif user_input == '4':  #remove Train
+            train_number = inp_helper.get_int('Enter Train_number: ', 'Please enter integer value only! ')
             admin.remove_train(train_number)
             print("Train successfully deleted")
 
-        elif user_input == '3':  #update train fare
-            train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
+        elif user_input == '5':  #update train fare
+            train_number = inp_helper.get_int('Enter Train_number: ', 'Please enter integer value only! ')
             train_fare = inp_helper.get_int('Enter new train fare: ', 'Please enter integer value only! ')
             admin.update_train_fare(train_number, train_fare)
 
 
-        elif user_input == '4':  #update station platform
-            train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
+        elif user_input == '6':  #update station platform
+            train_number = inp_helper.get_int('Enter Train_number: ', 'Please enter integer value only! ')
             station = input('Enter station name: ')
-            platform = input('Enter platform number: ')
-            admin.update_train_platform(train_number, station, platform)
+            if not station.isalpha():
+                print('Enter Valid Name! ')
+                break
+            else:
+                station = station.lower().capitalize()
 
-        elif user_input == '5':  #update tc
+            while True:
+                platform = input('Enter platform number: ')
+                if platform.isdigit():
+                    platform = int(platform)
+                    admin.update_train_platform(train_number, station, platform)
+                    break
+                else:
+                    print('Please enter digits only! ')
 
-            train_number = inp_helper.get_int('Enter Train_number', 'Please enter integer value only! ')
+
+        elif user_input == '7':  #update tc
+
+            train_number = inp_helper.get_int('Enter Train_number: ', 'Please enter integer value only! ')
             while True:
                 new_tc = input('Enter Name of Tc you wish to assign : ')
                 if not new_tc.isalpha():
@@ -244,9 +297,11 @@ def admin_func():
             admin.update_tc_assigned(train_number, new_tc)
             print(f"{new_tc} is assigned as new TC ")
 
-        elif user_input == '6':  #search by train number
+        elif user_input == '8':
             train.show_all_trains()
-            train_no = input("Enter train number : ")
+
+        elif user_input == '9':  #search by train number
+            train_no = input("Enter train number: ")
             if train_no.isdigit():
                 train_no = int(train_no)
                 train.search_by_train_number(train_no)
@@ -256,9 +311,45 @@ def admin_func():
                 else:
                     print("Provide only digits in the train number")
 
+        elif user_input == '10':  #search by train name
+            train_name = input("Enter train name: ")
+            if train_name.isalpha():
+                train.search_by_train_name(train_name)
+            else:
+                if not train_name:
+                    print('No input was provided!')
+                else:
+                    print("Provide Proper Name! ")
 
-        elif user_input == '7':
-            train.show_all_trains()
+        elif user_input == '11':  #search using stations
+            while True:
+                from_station = input('Enter the From Station: ')
+                if not from_station.isalpha():
+                    print('Enter Valid Name! ')
+
+                else:
+                    from_station = from_station.lower().capitalize()
+                    break
+
+            while True:
+                to_station = input('Enter the To Station: ')
+                if not to_station.isalpha():
+                    print('Enter Valid Name! ')
+
+                else:
+                    to_station = to_station.lower().capitalize()
+                    break
+
+            list_of_trains = train.show_train_using_stations(from_station, to_station)
+            if not list_of_trains:
+                print('No trains with the available route! ')
+            else:
+                print("The Following are the trains with the same route! ")
+                for train_number in list_of_trains:
+                    print(f"Train number: {train_number}")
+
+        elif user_input == '12':
+
             train_no = input("Enter train number : ")
             if train_no.isdigit():
                 train_no = int(train_no)
@@ -269,7 +360,7 @@ def admin_func():
                 else:
                     print("Provide only digits in the train number")
 
-        elif user_input == '8':
+        elif user_input == '13':
             train.show_all_trains()
             train_no = input("Enter train number : ")
             if train_no.isdigit():
@@ -282,15 +373,13 @@ def admin_func():
                         print('No input was provided!')
                     else:
                         print("Stations should also have a station name, not just numbers")
-
             else:
                 if not train_no:
                     print('No input was provided!')
                 else:
                     print("Provide only digits in the train number")
 
-        elif user_input == '9':
-            train.show_all_trains()
+        elif user_input == '14':
             train_no = input("Enter train number : ")
 
             if train_no.isdigit():
@@ -312,7 +401,7 @@ def admin_func():
                 else:
                     print("Provide only digits in the train number")
 
-        elif user_input == '10':
+        elif user_input == '15':
             user_input = input(welcome_menu)
             main_menu(user_input)
 

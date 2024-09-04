@@ -6,7 +6,7 @@ import json
 def create_tables_if_not_exists():
     cur.execute('CREATE TABLE IF NOT EXISTS Trains('
                 'TRAIN_NUMBER INTEGER NOT NULL PRIMARY KEY,'
-                'TRAIN_NAME TEXT,  TRAIN_FARE INTEGER, '
+                'TRAIN_NAME TEXT UNIQUE,  TRAIN_FARE INTEGER, '
                 'TC_ASSIGNED TEXT, START_TIME INTEGER, END_TIME INTEGER)')
 
     cur.execute('CREATE TABLE IF NOT EXISTS Train_Route('
@@ -88,7 +88,7 @@ def get_all_route_details():
 
 
 def get_route_details(train_number):
-    return cur.execute('SELECT ROUTE, PLATFORM FROM Train_Route WHERE train_number = ?', (train_number,)).fetchone()
+    return cur.execute('SELECT ROUTE, PLATFORM, ARRIVAL_TIME FROM Train_Route WHERE train_number = ?', (train_number,)).fetchone()
 
 
 def insert_train_data(train_details):
@@ -111,7 +111,7 @@ def insert_train_data(train_details):
 
 
 def update_train_fare(new_fare, train_no):
-    # IF TABLE DOES NOT EXISTS THROW ERROR
+    print('hereeeeee')
     cur.execute('UPDATE Trains SET TRAIN_FARE =? WHERE TRAIN_NUMBER = ?', (new_fare, train_no))
     conn.commit()
 

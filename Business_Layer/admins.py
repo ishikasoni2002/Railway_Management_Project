@@ -33,7 +33,7 @@ class Admin:
 
     def update_train_fare(self, train_number, new_fare):
         if utils.get_train_details(train_number):
-            utils.update_train_fare(train_number, new_fare)
+            utils.update_train_fare(new_fare, train_number)
             print('Train Fare updated! ')
         else:
             print('Train does not exists!')
@@ -42,6 +42,7 @@ class Admin:
         if not utils.get_train_details(train_number):
             print('No such train exists! ')
             return
+
         train_details = utils.get_route_details(train_number)
 
         route_details = json.loads(json.dumps(train_details[0]))

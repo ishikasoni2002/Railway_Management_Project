@@ -81,7 +81,7 @@ def route_details():
 def get_train_details():
     # getting train number
     while True:
-        train_no = get_int('Enter Train Number', 'Train number should only contain digits')
+        train_no = get_int('Enter Train Number: ', 'Train number should only contain digits')
         if train_no is None or len(str(train_no)) != 5:
             print('Please enter integer value with length = 5 ')
         else:

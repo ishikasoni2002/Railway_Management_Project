@@ -62,29 +62,23 @@ def print_train_details(train_details):
     if train_details:
         start_time = convert_minutes_to_time(train_details[0][4])
         end_time = convert_minutes_to_time(train_details[0][5])
-        total_days = 0
-        rem_time = 0
-        minutes = int()
-        time = 0
-        if train_details[0][5] > 24:
-            total_days = (train_details[0][5] // 60) // 24
-            rem_time = (train_details[0][4]) // 60 + (train_details[0][5]) // 60 - (24 * total_days)
-            time = (train_details[0][4]) // 60 + rem_time
-            minutes = (train_details[0][4]) % 60
-            print(minutes)
-            if time > 24:
-                total_days += 1
-                time = time - 24
 
         print(f'\nThe Train Number is {train_details[0][0]}\n'
               f'The Train Name is {train_details[0][1]}\n'
               f'The Train Fare is {train_details[0][2]}\n'
               f'The TC Assigned is {train_details[0][3]}\n'
               f'The Train Journey Starts at {start_time}\n'
-              f'The Train Journey Ends after {total_days} days at {time} :: {minutes} \n'
+              f'The Train Journey starts at {start_time} and Ends at {end_time} \n'
               )
     else:
         print('Train does not exists')
 
 def call_close_connection():
     utils.close_connection()
+
+def get_index(li, value):
+    try:
+        from_index = li.index(value)
+        return from_index
+    except ValueError:
+        return None

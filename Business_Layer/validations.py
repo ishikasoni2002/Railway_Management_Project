@@ -15,7 +15,7 @@ def check_username_and_password_format(type_un_or_pw, username_or_password):
 
 
 def check_time_format(time):
-    pattern = r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+    pattern = r'([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern,time ):
         return True
     return False
