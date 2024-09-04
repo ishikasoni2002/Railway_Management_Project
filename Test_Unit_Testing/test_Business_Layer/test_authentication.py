@@ -42,7 +42,7 @@ class TestAuthentication(unittest.TestCase):
         mock_admin_details.return_value = [['aman','password',b'password']]
         mock_checkpw.return_value = True
 
-        result = auth.is_admin('testuser', 'correctpassword')
+        result = auth.check_if_admin_exists('testuser', 'correctpassword')
         self.assertTrue(result)
 
     # @patch('Database_Layer.db_utils.get_hashed_password')
@@ -63,7 +63,7 @@ class TestAuthentication(unittest.TestCase):
         mock_admin_details.return_value = [['aman','password',b'password']]
         mock_checkpw.return_value = False
 
-        result = auth.is_admin('testuser', 'wrongpassword')
+        result = auth.check_if_admin_exists('testuser', 'wrongpassword')
 
         self.assertFalse(result)
 

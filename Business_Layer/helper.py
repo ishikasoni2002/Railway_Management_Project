@@ -9,6 +9,8 @@ def generate_hash(password):
     hashed = bcrypt.hashpw(pw_bytes, salt)
     return hashed
 
+def get_all_route_details():
+    return utils.get_all_route_details()
 
 def check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route):
     train_route = data_of_route[0]
@@ -17,27 +19,31 @@ def check_train_clash(start_time_in_minutes, end_time_in_minutes, data_of_route)
     route_specific_departure_time = data_of_route[3]
 
     time_detail = utils.get_time_details_of_start_and_end()
-    start_time = time_detail[0][1]
-    end_time = time_detail[0][2]
+    if time_detail :
 
-    for time in time_detail:
-        if ((start_time <= time[1] and time[1] <= end_time) or
-                (time[2] <= end_time and time[2] >= start_time)):  # can clash
-            route_table_details = utils.get_all_route_details()
+        index=0
+        for time in time_detail:
+            start_time =time_detail[index][1]
+            end_time = time_detail[index][2]
+            index+=1
+            if ((start_time <= start_time_in_minutes and start_time_in_minutes<= end_time) or
+                    (end_time_in_minutes<= end_time and end_time_in_minutes >= start_time)):  # can clash
+                route_table_details = utils.get_all_route_details()
 
-            for train_details in route_table_details:
-                stations = json.loads(train_details[1])
-                platforms = json.loads(train_details[2])
-                arrival_time = json.loads(train_details[3])
+                for train_details in route_table_details:
 
-                for index in range(len(stations)):
-                    for index_of_new_entry in range(len(train_route)):
-                        if stations[index] == train_route[index_of_new_entry]:
-                            if arrival_time[index] == route_specific_arrival_time[index_of_new_entry]:
-                                if platforms[index] == route_specific_platforms[index_of_new_entry]:
-                                    return True
-            else:
-                return False
+                    stations = json.loads(train_details[1])
+                    platforms = json.loads(train_details[2])
+                    arrival_time = json.loads(train_details[3])
+
+                    for index in range(len(stations)):
+                        for index_of_new_entry in range(len(train_route)):
+                            if stations[index] == train_route[index_of_new_entry]:
+                                if arrival_time[index] == route_specific_arrival_time[index_of_new_entry]:
+                                    if platforms[index] == route_specific_platforms[index_of_new_entry]:
+                                        return True
+                else:
+                    return False
 
     else:
         return False
@@ -50,8 +56,7 @@ def convert_minutes_to_time(minutes):
     return time
 
 
-def call_close_connection():
-    utils.close_connection()
+
 
 def print_train_details(train_details):
     if train_details:
@@ -81,3 +86,5 @@ def print_train_details(train_details):
     else:
         print('Train does not exists')
 
+def call_close_connection():
+    utils.close_connection()

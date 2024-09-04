@@ -25,12 +25,20 @@ def create_tables_if_not_exists():
 def get_admin_users():
     cur.execute('SELECT * FROM AdminUsers ').fetchall()
 
+
+def check_if_admin_table_empty():
+    return cur.execute('select * from AdminUsers').fetchall() == []
+
+
 def insert_first_admin_into_AdminUsers(username, hashed_password):
+    if not check_if_admin_table_empty():
+        return
     cur.execute('INSERT INTO AdminUsers VALUES(null, ?, ?)', (username, hashed_password))
     conn.commit()
 
-def admin_details(username):
-    cur.execute('SELECT * FROM AdminUsers WHERE USERNAMES = ?', (username, )).fetchall()
+
+def get_admin_details_from_username(username):
+    return cur.execute('SELECT * FROM AdminUsers WHERE USERNAMES = ?', (username,)).fetchall()
 
 
 #************************************************************************
@@ -53,15 +61,26 @@ def insert_new_admin(username, password):
     conn.commit()
 
 
+def check_if_train_exists(train_number):
+    return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall() != []
+
+
+def show_all_trains():
+    return cur.execute('SELECT * FROM Trains').fetchall()
+
+
 def get_train_details(train_number):
     return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
 
+
 def get_train_details_using_name(train_name):
-    return cur. execute('SELECT * FROM Trains WHERE train_name = ?', (train_name,)).fetchall()
+    return cur.execute('SELECT * FROM Trains WHERE train_name = ?', (train_name,)).fetchall()
 
 
-# def show_route(train_number):
-#     return cur.execute('SELECT ROUTE FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
+def delete_train(train_number):
+    cur.execute('DELETE FROM Trains WHERE TRAIN_NUMBER =?', (train_number,))
+    cur.execute('DELETE FROM Train_Route WHERE TRAIN_NUMBER =?', (train_number,))
+    conn.commit()
 
 
 def get_all_route_details():
@@ -69,7 +88,7 @@ def get_all_route_details():
 
 
 def get_route_details(train_number):
-    return cur.execute('SELECT ROUTE, PLATFORM FROM Train_Route WHERE train_number = ?', (train_number,)).fetchall()
+    return cur.execute('SELECT ROUTE, PLATFORM FROM Train_Route WHERE train_number = ?', (train_number,)).fetchone()
 
 
 def insert_train_data(train_details):
@@ -91,21 +110,18 @@ def insert_train_data(train_details):
     conn.commit()
 
 
-def delete_train(train_number):
-    cur.execute('DELETE FROM Trains WHERE TRAIN_NUMBER =?', (train_number,))
-    cur.execute('DELETE FROM Train_Route WHERE TRAIN_NUMBER =?', (train_number,))
-    conn.commit()
-
-
 def update_train_fare(new_fare, train_no):
     # IF TABLE DOES NOT EXISTS THROW ERROR
     cur.execute('UPDATE Trains SET TRAIN_FARE =? WHERE TRAIN_NUMBER = ?', (new_fare, train_no))
     conn.commit()
 
 
-def update_tc_assigned(train_no, new_tc):
+def update_tc_assigned(train_number, new_tc):
     # IF TABLE DOES NOT EXISTS THROW ERROR
-    cur.execute('UPDATE Trains SET TC_ASSIGNED =? WHERE TRAIN_NUMBER = ?', (new_tc, train_no))
+    if not check_if_train_exists(train_number):
+        print('Train not found! ')
+        return
+    cur.execute('UPDATE Trains SET TC_ASSIGNED =? WHERE TRAIN_NUMBER = ?', (new_tc, train_number))
     conn.commit()
 
 
@@ -113,18 +129,13 @@ def get_time_details_of_start_and_end():
     return cur.execute('SELECT TRAIN_NUMBER, START_TIME, END_TIME FROM Trains').fetchall()
 
 
-def show_all_trains():
-    return cur.execute('SELECT * FROM Trains').fetchall()
-
-
 def update_station_platform(train_number, platform):
+    if not check_if_train_exists(train_number):
+        return
     cur.execute('UPDATE Train_Route SET PLATFORM = ? WHERE TRAIN_NUMBER = ?',
                 (platform, train_number))
     conn.commit()
 
-
-# def insert_into_table(table_name, values):
-#     query= f'INSERT INTO {table_name} VALUES(parameters)',()
 
 def close_connection():
     cur.close()

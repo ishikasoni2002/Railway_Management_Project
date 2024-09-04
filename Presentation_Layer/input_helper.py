@@ -6,10 +6,9 @@ def get_time():
         time = input('Enter Time for the train (24 Hours Format HH : MM): ')
         is_valid_format = validation.check_time_format(time)
         if is_valid_format:
-            return True
+            return time
         else:
-            print('Enter Valid Format!')
-            return False
+            raise RuntimeError('Enter Valid Format!')
 
 
 
@@ -25,8 +24,11 @@ def get_int(msg1, msg2):
 
 
 def hours_to_minute(time):
-    total_minutes = (time['Hours'] * 60) + time['Minutes']
-    return total_minutes
+    time = time.split(':')
+    hours, minutes = tuple([i.strip() for i in time])
+    hours = int(hours)
+    minutes = hours*60 + int(minutes)
+    return minutes
 
 
 def route_details():
@@ -42,15 +44,27 @@ def route_details():
                 break
             else:
                 print("Station Name can only Consist of Alphabets and digits! ")
-
+        arrival_time = -1
         platform = get_int('Enter Platform Number: ', 'Platform should only contain digits')
+        while True :
+            try :
+                arrival_time = get_time()
+                total_minutes = hours_to_minute(arrival_time)
+                if list_of_arrival_time:
+                    if list_of_arrival_time[len(list_of_arrival_time) - 1] < total_minutes:
+                        list_of_arrival_time.append(total_minutes)
+                        break
+                    else:
+                        print('Enter time properly!')
+                else:
+                    list_of_arrival_time.append(total_minutes)
+                    break
+            except RuntimeError as e :
+                print('Enter time in HH:MM format only !')
 
-        arrival_time = get_time()
-        total_minutes = hours_to_minute(arrival_time)
 
         list_of_stations.append(station_name.lower().capitalize())
         list_of_platforms.append(platform)
-        list_of_arrival_time.append(total_minutes)
         list_of_departure_time.append(total_minutes + 10)
 
         admin_choice = input("Do you wish to add stations? y/n: ")

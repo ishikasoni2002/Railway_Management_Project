@@ -2,7 +2,7 @@ import Database_Layer.db_utils as utils
 import Business_Layer.helper as helper
 
 
-class Admin_users:
+class AdminUsers:
 
     def __init__(self):
         self.current_user = 'Ishika123'
@@ -24,8 +24,8 @@ class Admin_users:
             utils.insert_first_admin_into_AdminUsers(username, hashed_password)
 
     def insert_other_admin_into_AdminUsers(self, username, password):
-        list_of_admins = utils.admin_details(username)
-        if list_of_admins:
+        admin_details = utils.get_admin_details_from_username(username)
+        if admin_details:
             print('Username Already Exists!')
         else:
             utils.insert_new_admin(username, password)
