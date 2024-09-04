@@ -21,7 +21,7 @@ class Admin:
 
         if flag:
             print('There is a clashing with another Train! ')
-        elif start_time_in_minutes >= end_time_in_minutes:
+        elif start_time_in_minutes >= end_time_in_minutes and start_time_in_minutes-end_time_in_minutes >= 720:
             print('Start time of the train should be less than end time !')
         elif end_time_in_minutes-start_time_in_minutes > 60*12 :
             print('Train cannot have a journey of more than 12 hours!')

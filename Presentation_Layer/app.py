@@ -191,7 +191,7 @@ def guest_func():
                 train_no = int(train_no)
                 station = input('Enter Station : ').lower().capitalize()
                 if station.isalpha() and station.isalnum():
-                    train.show_platform_number(train_no, station)  # todo Not implemented properly
+                    train.show_platform_number(train_no, station)
                 else:
                     if not station:
                         print('No input was provided!')
