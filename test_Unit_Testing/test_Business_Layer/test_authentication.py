@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import patch
 from Business_Layer.authentication import Authentication
-import Business_Layer.authentication
 
 
 class TestAuthentication(unittest.TestCase):
@@ -35,15 +34,34 @@ class TestAuthentication(unittest.TestCase):
     #
     #     self.assertTrue(result)
 
-    @patch('Business_Layer.authentication.utils.admin_details')
+    @patch('Business_Layer.authentication.utils.get_admin_details_from_username')
     @patch('bcrypt.checkpw')
     def test_is_admin_success(self, mock_checkpw, mock_admin_details):
         auth = Authentication()
-        mock_admin_details.return_value = [['aman','password',b'password']]
+        mock_admin_details.return_value = [['aman', 'password', b'password']]
         mock_checkpw.return_value = True
 
         result = auth.check_if_admin_exists('testuser', 'correctpassword')
         self.assertTrue(result)
+
+    @patch('Business_Layer.authentication.utils.get_admin_details_from_username')
+    @patch('bcrypt.checkpw')
+    def test_is_admin_Failure(self, mock_checkpw, mock_admin_details):
+        auth = Authentication()
+        mock_admin_details.return_value = [['aman', 'password', b'password']]
+        mock_checkpw.return_value = False
+
+        result = auth.check_if_admin_exists('testuser', 'correctpassword')
+        self.assertFalse(result)
+
+    @patch('Business_Layer.authentication.utils.get_admin_details_from_username')
+    def test_username_does_not_exist(self, mock_admin_details):
+        #starting returning false
+        auth = Authentication()
+        mock_admin_details.return_value = []
+
+        result = auth.check_if_admin_exists('testuser', 'correctpassword')
+        self.assertFalse(result)
 
     # @patch('Database_Layer.db_utils.get_hashed_password')
     # @patch('bcrypt.checkpw')
@@ -56,16 +74,37 @@ class TestAuthentication(unittest.TestCase):
     #
     #     self.assertFalse(result)
 
-    @patch('Business_Layer.authentication.utils.admin_details')
-    @patch('bcrypt.checkpw')
+    #doubt...... about encode
+    @patch('Business_Layer.authentication.utils.get_admin_details_from_username')
+    @patch('Business_Layer.authentication.bcrypt.checkpw')
     def test_is_admin_failure(self, mock_checkpw, mock_admin_details):
+
+        #login successful == false
+
+        username = 'testuser'
+        password = 'wrongpassword'
         auth = Authentication()
-        mock_admin_details.return_value = [['aman','password',b'password']]
+        mock_admin_details.return_value = [('1', 'testuser', b'password')]
         mock_checkpw.return_value = False
-
-        result = auth.check_if_admin_exists('testuser', 'wrongpassword')
-
+        result=auth.check_if_admin_exists(username, password)
+        mock_admin_details.assert_called_once_with(username)
+        orignl_hash_pw = b'wrongpassword'
+        mock_checkpw.assert_called_once_with(orignl_hash_pw, b'password')
         self.assertFalse(result)
+
+    @patch('Business_Layer.authentication.utils.get_admin_details_from_username', return_value=True)
+    @patch('Business_Layer.authentication.bcrypt.checkpw')
+    def test_is_admin_failure_to_success(self, mock_checkpw, mock_admin_details):
+        username = 'testuser'
+        password = 'wrongpassword'
+        auth = Authentication()
+        mock_admin_details.return_value = [('1', 'testuser', b'password')]
+        mock_checkpw.return_value = True
+        result= auth.check_if_admin_exists(username, password)
+        mock_admin_details.assert_called_once_with(username)
+        orignl_hash_pw = b'wrongpassword'
+        mock_checkpw.assert_called_once_with(b'wrongpassword', b'password')
+        self.assertTrue(result)
 
     @patch('Database_Layer.db_utils.duplicate_usernames')
     def test_is_unique_username_success(self, mock_duplicate_usernames):

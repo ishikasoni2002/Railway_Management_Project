@@ -1,6 +1,5 @@
 from Business_Layer.admin_Users import AdminUsers as admin_users
 import Database_Layer.db_utils as utils
-from Database_Layer import connection
 import bcrypt
 
 

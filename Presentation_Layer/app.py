@@ -1,11 +1,10 @@
-import Business_Layer
+
 from Business_Layer.authentication import Authentication
 import Business_Layer.validations as validation
 from Business_Layer.trains import Train
 import Presentation_Layer.input_helper as inp_helper
 from Business_Layer.admins import Admin
 from Business_Layer.helper import get_all_route_details
-import getpass
 
 # object creation
 auth = Authentication()
@@ -61,15 +60,13 @@ _______________________________________________________________________________
 '''
 
 #start
-
 user_input = input(welcome_menu)
+
+
 user_role = 'Guest'
 
 
-def get_password():
-    # Prompt the user for a password
-    password = getpass.getpass(prompt='Enter Password: ')
-    return password
+
 
 
 def main_menu(user_input):
@@ -81,8 +78,7 @@ def main_menu(user_input):
             while True:
                 username = input('Enter Username: ')
                 is_username_valid = validation.check_username_and_password_format('username', username)
-                password = get_password()
-                print("Password entered:", password)
+                password = input('Enter Password: ')
                 is_password_valid = validation.check_username_and_password_format('password', password)
 
                 if is_username_valid and is_password_valid:
@@ -191,7 +187,7 @@ def guest_func():
                 train_no = int(train_no)
                 station = input('Enter Station : ').lower().capitalize()
                 if station.isalpha() and station.isalnum():
-                    train.show_platform_number(train_no, station)
+                    train.show_platform_number(train_no, station)  # todo Not implemented properly
                 else:
                     if not station:
                         print('No input was provided!')

@@ -10,8 +10,8 @@ class Admin:
         if utils.get_train_details(train_details['train_no']):
             print('Train Number already exists! ')
             return
-        if len(train_details['route']) < 2 :
-            raise RuntimeError('Add minimum of 2 stations !')
+        if len(train_details['route']) < 2:
+            print('Add minimum of 2 stations! ')
 
         start_time_in_minutes = train_details['starting_station_time']
         end_time_in_minutes = train_details['ending_station_time']
@@ -21,9 +21,9 @@ class Admin:
 
         if flag:
             print('There is a clashing with another Train! ')
-        elif start_time_in_minutes >= end_time_in_minutes and start_time_in_minutes-end_time_in_minutes >= 720:
+        elif start_time_in_minutes >= end_time_in_minutes:
             print('Start time of the train should be less than end time !')
-        elif end_time_in_minutes-start_time_in_minutes > 60*12 :
+        elif end_time_in_minutes-start_time_in_minutes > 60*12:
             print('Train cannot have a journey of more than 12 hours!')
         else:
             utils.insert_train_data(train_details)
@@ -49,9 +49,6 @@ class Admin:
         platform_details = json.loads(json.dumps(train_details[1]))
         route_details = route_details.strip('[').strip(']').split(',')
         platform_details = platform_details.strip('[').strip(']').split(',')
-        #
-        # route_details = json.loads(train_details[0][0])  #list
-        # platform_details = json.loads(train_details[0][1])  #list
         print(route_details, type(route_details[0]), train_details, type(train_details), platform_details, type(platform_details))
 
         for index in range(len(route_details)):

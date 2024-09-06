@@ -51,14 +51,9 @@ def route_details():
                 arrival_time = get_time()
                 total_minutes = hours_to_minute(arrival_time)
                 if list_of_arrival_time:
-                    if list_of_arrival_time[len(list_of_arrival_time) - 1] < total_minutes+10:
+                    if list_of_arrival_time[len(list_of_arrival_time) - 1] < total_minutes:
                         list_of_arrival_time.append(total_minutes)
                         break
-                    elif list_of_arrival_time[len(list_of_arrival_time) - 1] > total_minutes:
-                        if list_of_arrival_time[0] - total_minutes <= 720:
-                            list_of_arrival_time.append(total_minutes)
-                            break
-
                     else:
                         print('Enter time properly!')
                 else:

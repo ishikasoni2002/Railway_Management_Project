@@ -4,8 +4,6 @@ import Business_Layer.helper as helper
 
 class AdminUsers:
 
-    def __init__(self):
-        self.current_user = 'Ishika123'
 
     def check_if_admin_exists(self):
         count_of_admins = utils.get_admin_users()
