@@ -20,22 +20,25 @@ class Authentication:
     # Checking if role is admin or guest
     def check_if_admin_exists(self, username, password):
         username_and_password = utils.get_admin_details_from_username(username)
+        print(username_and_password,'hih')
         if not username_and_password:
-            return
+            return False
 
         original_hashed_password = username_and_password[0][2]
+        print(original_hashed_password)
         login_successful = bcrypt.checkpw(password.encode('utf-8'), original_hashed_password)
+        print(login_successful)
         if login_successful:
             return True
         else:
             return False
 
     def login_admin(self, username, password):
-        is_admin_table_empty = utils.check_if_admin_table_empty()
+        # is_admin_table_empty = utils.check_if_admin_table_empty()
         user_type = self.check_if_admin_exists(username, password)
         new_admin_user_object = admin_users()
-        new_admin_user_object.insert_first_admin_into_AdminUsers(username, password)
-        if user_type or is_admin_table_empty:
+        # new_admin_user_object.insert_first_admin_into_AdminUsers(username, password)
+        if user_type :
             return 'Admin'
         else:
             return 'Guest'

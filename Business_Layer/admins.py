@@ -6,6 +6,8 @@ import Business_Layer.helper as helper
 
 class Admin:
 
+
+
     def add_new_train(self, train_details):
         if utils.get_train_details(train_details['train_no']):
             print('Train Number already exists! ')

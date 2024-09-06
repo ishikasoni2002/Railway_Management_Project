@@ -21,4 +21,16 @@ def check_time_format(time):
     return False
 
 
+def check_train_number_format(train_no):
+    if train_no.isdigit() and len(train_no) == 5:
+        return True
+    else:
+        return False
+
+def check_station_name_format(station_name):
+    if station_name.isalpha():
+        return True
+    else:
+        return False
+
 

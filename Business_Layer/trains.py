@@ -34,8 +34,8 @@ class Train:
         if train_details:
             res = utils.get_route_details(train_number)
             list_of_routes = json.loads(res[0])
-            list_of_platforms =json.loads(res[1])
-            list_of_arrival_time =json.loads(res[2])
+            list_of_platforms = json.loads(res[1])
+            list_of_arrival_time = json.loads(res[2])
             print(f"The Route of the Train {train_number} is as follows: ")
             for index in range(len(list_of_routes)):
                 print(f"The train will arrive on {list_of_routes[index]} at platform 0{list_of_platforms[index]} at {helper.convert_minutes_to_time(list_of_arrival_time[index])}")
@@ -44,23 +44,18 @@ class Train:
             print('Train does not exists!')
 
     def show_platform_number(self, train_number, station):
-        # todo yet to implement
         train_exists = utils.get_train_details(train_number)
         if not train_exists:
             print('Train does not exist! ')
             return
 
         train_details = utils.get_route_details(train_number)
-        print(train_details)
-        print(train_details[0], type(train_details[0]))
-
-        stations = json.loads(json.dumps(train_details[0]))
-        platforms = json.loads(json.dumps(train_details[1]))
-        stations = stations.strip('[').strip(']').split(',')
-        platforms = platforms.strip('[').strip(']').split(',')
+        route = train_details[0]
+        platforms = train_details[1]
+        stations = helper.json_string_to_list(route)
+        platforms = helper.json_string_to_list(platforms)
 
         for index in range(len(stations)):
-            print(stations[index], station)
             if stations[index].strip('"') == station:
                 print(f'The platform for {station} of train number {train_number} is: ', platforms[index])
                 break
@@ -71,8 +66,7 @@ class Train:
         train_details_if_exists = utils.get_train_details(train_number)
         if train_details_if_exists:
             train_route = utils.get_route_details(train_number)[0]
-            train_route = json.loads(json.dumps(train_route))
-            train_route = train_route.strip('[').strip(']').split(',')
+            train_route = helper.json_string_to_list(train_route)
             train_route = [route.strip(' ').strip('"') for route in train_route]
             from_index = -1
             to_index = -1
@@ -89,7 +83,7 @@ class Train:
                 if total_stations == 0:
                     print('You are on the station itself')
                 elif total_stations > 0:
-                    return (train_fare / (len(train_route) - 1)) * total_stations
+                    print((train_fare / (len(train_route) - 1)) * total_stations)
 
             else:
                 print("Enter valid stations and in correct format")

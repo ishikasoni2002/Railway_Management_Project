@@ -4,6 +4,7 @@ import json
 
 
 def generate_hash(password):
+    print(password,"passwordd")
     pw_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(pw_bytes, salt)
@@ -82,3 +83,11 @@ def get_index(li, value):
         return from_index
     except ValueError:
         return None
+
+def json_string_to_list(train_detail):
+    train_detail = json.loads(json.dumps(train_detail))
+    train_detail = train_detail.strip('[').strip(']').split(',')
+    return train_detail
+
+
+

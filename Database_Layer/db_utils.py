@@ -16,30 +16,46 @@ def create_tables_if_not_exists():
 
     cur.execute('CREATE TABLE IF NOT EXISTS AdminUsers('
                 'ID INTEGER PRIMARY KEY NOT NULL, '
-                'USERNAMES TEXT, PASSWORDS TEXT)')
+                f'USERNAMES TEXT, PASSWORDS TEXT)')
+
+    insert_first_admin_into_AdminUsers()
 
     conn.commit()
 
 
 #admin User functions
+
+
+def insert_new_admin(username, hashed_password):
+    cur.execute('INSERT INTO AdminUsers VALUES(null, ?, ?)', (username, hashed_password))
+    conn.commit()
+
 def get_admin_users():
-    cur.execute('SELECT * FROM AdminUsers ').fetchall()
+    if not check_if_admin_table_empty():
+        return cur.execute('SELECT * FROM AdminUsers ').fetchall()
 
 
 def check_if_admin_table_empty():
-    return cur.execute('select * from AdminUsers').fetchall() == []
+    return cur.execute('SELECT * FROM AdminUsers ').fetchall() == []
 
 
-def insert_first_admin_into_AdminUsers(username, hashed_password):
+def insert_first_admin_into_AdminUsers(username='Ishika123', hashed_password=helper.generate_hash('Ishika@123')):
     if not check_if_admin_table_empty():
         return
     cur.execute('INSERT INTO AdminUsers VALUES(null, ?, ?)', (username, hashed_password))
     conn.commit()
 
 
-def get_admin_details_from_username(username):
-    return cur.execute('SELECT * FROM AdminUsers WHERE USERNAMES = ?', (username,)).fetchall()
 
+def get_admin_details_from_username(username):
+    if not check_if_admin_table_empty():
+        return cur.execute('SELECT * FROM AdminUsers WHERE USERNAMES = ?', (username,)).fetchall()
+
+
+def delete_admin(username):
+    if not check_if_admin_table_empty():
+        cur.execute('DELETE FROM AdminUsers WHERE USERNAMES = ?', (username,))
+    conn.commit()
 
 #************************************************************************
 
@@ -56,13 +72,13 @@ def duplicate_usernames(username):
 
 
 def insert_new_admin(username, password):
-    password = helper.generate_hash(password)
+    # password = helper.generate_hash(password)
     cur.execute('Insert into AdminUsers VALUES(null, ?, ?)', (username, password))
     conn.commit()
 
 
-def check_if_train_exists(train_number):
-    return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall() != []
+# def check_if_train_exists(train_number):
+#     return cur.execute('SELECT * FROM Trains WHERE train_number = ?', (train_number,)).fetchall()
 
 
 def show_all_trains():
@@ -111,14 +127,13 @@ def insert_train_data(train_details):
 
 
 def update_train_fare(new_fare, train_no):
-    print('hereeeeee')
     cur.execute('UPDATE Trains SET TRAIN_FARE =? WHERE TRAIN_NUMBER = ?', (new_fare, train_no))
     conn.commit()
 
 
 def update_tc_assigned(train_number, new_tc):
     # IF TABLE DOES NOT EXISTS THROW ERROR
-    if not check_if_train_exists(train_number):
+    if not get_train_details(train_number):
         print('Train not found! ')
         return
     cur.execute('UPDATE Trains SET TC_ASSIGNED =? WHERE TRAIN_NUMBER = ?', (new_tc, train_number))
@@ -130,13 +145,10 @@ def get_time_details_of_start_and_end():
 
 
 def update_station_platform(train_number, platform):
-    if not check_if_train_exists(train_number):
+    if not get_train_details(train_number):
         return
     cur.execute('UPDATE Train_Route SET PLATFORM = ? WHERE TRAIN_NUMBER = ?',
                 (platform, train_number))
     conn.commit()
 
 
-def close_connection():
-    cur.close()
-    conn.close()

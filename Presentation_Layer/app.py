@@ -1,4 +1,4 @@
-
+import Business_Layer.helper
 from Business_Layer.authentication import Authentication
 import Business_Layer.validations as validation
 from Business_Layer.trains import Train
@@ -59,7 +59,7 @@ _______________________________________________________________________________
 _______________________________________________________________________________
 '''
 
-#start
+# start
 user_input = input(welcome_menu)
 
 
@@ -74,11 +74,11 @@ def main_menu(user_input):
 
     while True:
         if user_input == '1':
-
             while True:
                 username = input('Enter Username: ')
-                is_username_valid = validation.check_username_and_password_format('username', username)
                 password = input('Enter Password: ')
+
+                is_username_valid = validation.check_username_and_password_format('username', username)
                 is_password_valid = validation.check_username_and_password_format('password', password)
 
                 if is_username_valid and is_password_valid:
@@ -87,12 +87,13 @@ def main_menu(user_input):
                         return user_role
                     else:
                         try_again = input(
-                            'Admin login failed! Press enter to try again, press n to continue as guest : ')
+                            'Admin login failed! Press enter to try again, press n to continue as guest: ')
                         if try_again == 'n':
                             return user_role
 
                 else:
                     print('Check Your Username and Password Again! ')
+
 
         elif user_input == '2':
             return user_role
