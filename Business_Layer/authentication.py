@@ -20,14 +20,11 @@ class Authentication:
     # Checking if role is admin or guest
     def check_if_admin_exists(self, username, password):
         username_and_password = utils.get_admin_details_from_username(username)
-        print(username_and_password,'hih')
         if not username_and_password:
             return False
 
         original_hashed_password = username_and_password[0][2]
-        print(original_hashed_password)
         login_successful = bcrypt.checkpw(password.encode('utf-8'), original_hashed_password)
-        print(login_successful)
         if login_successful:
             return True
         else:

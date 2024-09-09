@@ -11,7 +11,6 @@ class AdminUsers:
 
     def create_new_admin(self,username, password):
         username_already_present = utils.get_admin_details_from_username(username)
-        print(username_already_present,'111')
         if not username_already_present:
             hashed_password = helper.generate_hash(password)
             utils.insert_new_admin(username, hashed_password)
@@ -58,7 +57,6 @@ class AdminUsers:
 
     def insert_other_admin_into_AdminUsers(self, username, password):
         admin_details = utils.get_admin_details_from_username(username)
-        print(admin_details,' ...... ')
         if admin_details:
             print('Username Already Exists!')
         else:

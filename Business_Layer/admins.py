@@ -51,14 +51,11 @@ class Admin:
         platform_details = json.loads(json.dumps(train_details[1]))
         route_details = route_details.strip('[').strip(']').split(',')
         platform_details = platform_details.strip('[').strip(']').split(',')
-        print(route_details, type(route_details[0]), train_details, type(train_details), platform_details, type(platform_details))
 
         for index in range(len(route_details)):
             if route_details[index] == station:
                 platform_details[index] = platform
-                print(platform_details[index])
                 platform_details = json.dumps(platform_details)
-                print(platform_details, type(platform_details))
                 utils.update_station_platform(train_number, platform_details)
                 break
 
